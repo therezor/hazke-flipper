@@ -14,6 +14,8 @@
 
 namespace Capture {
 
+#if HAZKE_CAPTURE
+
 constexpr int      Ring  = 8;
 constexpr uint32_t Every = 3;
 constexpr size_t   ScreenBytes = 1024;
@@ -32,7 +34,6 @@ inline Storage* storage = nullptr;
 inline File*    file = nullptr;
 
 inline void begin() {
-  if (!HAZKE_CAPTURE) return;
   storage = (Storage*)furi_record_open(RECORD_STORAGE);
   storage_simply_mkdir(storage, STORAGE_APP_DATA_PATH_PREFIX);
   ring = (Frame*)malloc(sizeof(Frame) * Ring);
@@ -84,5 +85,15 @@ inline void end() {
   furi_record_close(RECORD_STORAGE);
   storage = nullptr;
 }
+
+#else
+
+// Release builds: nothing is recorded and none of the above is compiled.
+inline void begin() {}
+inline void onDraw(Canvas*) {}
+inline void flush() {}
+inline void end() {}
+
+#endif
 
 } // namespace Capture
