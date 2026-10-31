@@ -71,11 +71,11 @@ You fly in full 3D with pitch and roll on the D-pad. An autopilot covers what si
   <img src="docs/media/menu.png" width="32%" alt="The flight menu">
 </p>
 
-Every screenshot and clip in this README was recorded on a Flipper Zero. [Under the hood](#under-the-hood) says how.
+All the screenshots and clips in this README come from a Flipper Zero. [Under the hood](#under-the-hood) explains the capture.
 
 ## Install
 
-1. **Download.** Get `hazke.fap` from [Releases](https://github.com/therezor/hazke-flipper/releases/latest). The file is built for the official firmware 1.5, which has app API 88.
+1. **Download.** Get `hazke.fap` from [Releases](https://github.com/therezor/hazke-flipper/releases/latest). The file targets the official firmware 1.5, which has app API 88.
 2. **Copy it.** Put it in `SD Card/apps/Games/` with qFlipper or the Flipper mobile app.
 3. **Play.** Open Apps, then Games, then Hazke, and choose NEW GAME. You start next to a jump gate with 100 credits and the first planet marked.
 
@@ -159,7 +159,7 @@ The game saves to `apps_data/hazke` on the SD card each time you land and each t
 
 1. **Shared rules.** The galaxy, market, ships, combat, missiles, jobs, factions and ranks are the Cardputer game's C++ headers. `Platform.h` replaces the few Arduino calls they make.
 2. **A frame buffer in the screen's own layout.** `Render.h` draws lines, circles and a 3x5 font into 1 KB laid out like the display's memory, and each frame reaches the screen with one copy. Drawing through the firmware's bitmap call took about 40 ms a frame and starved the button input. The copy takes less than 1 ms.
-3. **Wireframe 3D.** `World.h` clips every line at the near plane and the edge of the view. A planet hides the far half of its globe lines, and anything behind the sun or a nearer planet isn't drawn.
+3. **Wireframe 3D.** `World.h` clips every line at the near plane and the edge of the view. A planet hides the far half of its globe lines, and `World.h` skips anything behind the sun or a nearer planet.
 4. **Sound on its own thread.** `Audio.h` plays tone sequences from a thread that owns the speaker, because the firmware only lets the owning thread drive it.
 5. **A desktop simulator.** `tools/sim/run.sh` builds the flight code and the renderer for a computer and writes sample frames to `tools/sim/sheet.png`.
 6. **Capture builds.** With `HAZKE_CAPTURE` set to 1 in `Config.h`, the game writes every third frame it shows to the SD card. `tools/demo.py` plays a scripted demo over the USB command line, and `tools/frames.py` turns the recording into PNGs and GIFs.
